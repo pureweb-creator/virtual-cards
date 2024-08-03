@@ -1,6 +1,7 @@
 FROM php:8.2-fpm
 
 WORKDIR /app
+ARG APP_ENV
 
 RUN apt-get update \
     && apt-get install -y libmemcached-dev zlib1g-dev libssl-dev \
@@ -21,7 +22,6 @@ RUN if [ "$APP_ENV" != "production" ]; then \
     fi
 
 
-ARG APP_ENV
 ARG UNAME=docker
 ARG GID=1000
 ARG UID=1000
