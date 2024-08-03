@@ -47,7 +47,6 @@ services:
     volumes:
       - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
       - 'mysqldata:/var/lib/mysql'
-      -
 
   certbot:
     image: 'certbot/certbot'
