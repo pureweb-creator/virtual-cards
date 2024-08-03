@@ -14,17 +14,22 @@ class DatabaseSeeder extends Seeder
     {
         SocialNetwork::factory()->create([
             'name'=>'telegram',
-            'url_pattern'=>'tg://resolve?domain=',
+            'url_pattern'=>'https://t.me/',
         ]);
 
         SocialNetwork::factory()->create([
-            'name'=>'facebook',
-            'url_pattern'=>'https://www.facebook.com/',
+            'name'=>'twitter',
+            'url_pattern'=>'https://x.com/',
         ]);
 
         SocialNetwork::factory()->create([
             'name'=>'instagram',
             'url_pattern'=>'https://www.instagram.com/',
+        ]);
+
+        SocialNetwork::factory()->create([
+            'name'=>'facebook',
+            'url_pattern'=>'https://www.facebook.com/',
         ]);
 
         SocialNetwork::factory()->create([
