@@ -47,14 +47,15 @@ services:
     volumes:
       - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
       - 'mysqldata:/var/lib/mysql'
+      -
 
-    certbot:
-        image: 'certbot/certbot'
-        restart: 'unless-stopped'
-        volumes:
-            - './.docker/certbot/conf:/etc/letsencrypt'
-            - './.docker/certbot/www:/app/certbot'
-        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  certbot:
+    image: 'certbot/certbot'
+    restart: 'unless-stopped'
+    volumes:
+        - './.docker/certbot/conf:/etc/letsencrypt'
+        - './.docker/certbot/www:/app/certbot'
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   mysqldata:
