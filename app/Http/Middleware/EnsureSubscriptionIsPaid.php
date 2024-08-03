@@ -18,12 +18,11 @@ class EnsureSubscriptionIsPaid
     {
         $user = Auth::user();
 
-        if ($user->is_subscribed && (
-            $user->trial_expiration_time->gt(now()) ||
-            $user->expiration_time ?? $user->expiration_time->gt(now())
-            )
-        )
-        {
+        if ($user->is_subscribed && $user->trial_expiration_time->gt(now())){
+            return $next($request);
+        }
+
+        if ($user->is_subscribed && !is_null($user->expiration_time) && $user->expiration_time->gt(now())){
             return $next($request);
         }
 
