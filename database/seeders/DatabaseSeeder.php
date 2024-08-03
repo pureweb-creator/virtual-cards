@@ -24,17 +24,17 @@ class DatabaseSeeder extends Seeder
 
         SocialNetwork::factory()->create([
             'name'=>'instagram',
-            'url_pattern'=>'https://www.instagram.com/',
+            'url_pattern'=>'https://instagram.com/',
         ]);
 
         SocialNetwork::factory()->create([
             'name'=>'facebook',
-            'url_pattern'=>'https://www.facebook.com/',
+            'url_pattern'=>'https://facebook.com/',
         ]);
 
         SocialNetwork::factory()->create([
             'name'=>'whatsapp',
-            'url_pattern'=>'https://www.wa.me/',
+            'url_pattern'=>'https://wa.me/',
         ]);
     }
 }
