@@ -48,10 +48,12 @@
 
             @if($user->locations->isNotEmpty())
                 <li class="d-flex align-items-center justify-content-between">
-                    {{$user->locations->first()->street ?? ''}}
-                    {{$user->locations->first()->city ?? ''}}
-                    {{$user->locations->first()->country ?? ''}}
-                    {{$user->locations->first()->postcode ?? ''}}
+                    <a href="https://maps.google.com/?q={{$user->locations->first()->street ?? ''}}{{$user->locations->first()->city ?? ''}}{{$user->locations->first()->country ?? ''}}{{$user->locations->first()->postcode ?? ''}}" target="_blank">
+                        {{$user->locations->first()->street ?? ''}}
+                        {{$user->locations->first()->city ?? ''}}
+                        {{$user->locations->first()->country ?? ''}}
+                        {{$user->locations->first()->postcode ?? ''}}
+                    </a>
                     <i class="bi bi-pin-map ms-4"></i>
                 </li>
             @endif
