@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\DTO\LocationDTO;
+use App\DTO\SocialLinkDTO;
+use App\DTO\UserAvatarDTO;
+use App\DTO\UserProfileDTO;
+use App\Http\Requests\StoreUserLocationRequest;
+use App\Http\Requests\StoreUserAvatarRequest;
+use App\Http\Requests\StoreUserInfoRequest;
+use App\Http\Requests\StoreUserSocialLinksRequest;
+use App\Models\SocialNetwork;
+use App\Models\User;
+use App\Services\ProfileService;
+use chillerlan\QRCode\QRCode;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+class ProfileController extends Controller
+{
+    public function __construct(
+        private readonly ProfileService $profileService
+    ) {}
+
+    public function index()
+    {
+        $userPage = route('user.page', Auth::user()->user_hash);
+        $user = Auth::user()->load(['socialNetworks', 'locations']);
+
+        return view('pages.profile.dashboard', [
+            'user' => $user,
+            'qr' => (new QRCode())->render($userPage),
+            'uniqueLink' => $userPage,
+            'socialNetworks' => SocialNetwork::all(),
+        ]);
+    }
+
+    public function update(StoreUserInfoRequest $request)
+    {
+        $userProfileDTO = new UserProfileDTO(
+            ...$request->validated(),
+        );
+
+        $this->profileService->update($userProfileDTO);
+        $this->profileService->generateVcard();
+
+        return back()->with([
+            'message'=>'Info updated successfully',
+        ]);
+    }
+
+    public function updateUserAddress(StoreUserLocationRequest $request)
+    {
+        $userAddressDTO = new LocationDTO(
+            ...$request->validated()
+        );
+
+        $this->profileService->updateUserLocation($userAddressDTO);
+        $this->profileService->generateVcard();
+
+        return back()->with([
+            'messageAddress'=>'Info updated successfully',
+        ]);
+
+    }
+
+    public function	storeAvatar(StoreUserAvatarRequest $request)
+    {
+        $this->profileService->storeAvatar(
+            new UserAvatarDTO($request->image)
+        );
+        $this->profileService->generateVcard();
+
+        return response()->json([
+            'success'=>'true'
+        ]);
+    }
+
+    public function destroyAvatar()
+    {
+        $this->profileService->destroyAvatar();
+        $this->profileService->generateVcard();
+
+        return back()->with([
+            'messageAvatar'=>'Profile picture deleted successfully',
+        ]);
+    }
+
+    public function updateUserSocialLinks(StoreUserSocialLinksRequest $request)
+    {
+        $dto = new SocialLinkDTO(...$request->validated());
+        $this->profileService->updateUserSocialLinks($dto);
+        $this->profileService->generateVcard();
+
+        return back()->with([
+            'messageSocLink'=>'Info updated successfully',
+        ]);
+    }
+
+    public function page($hash)
+    {
+        $user = User::where('user_hash', $hash)
+            ->with(['socialNetworks', 'locations'])
+            ->firstOrFail();
+
+        return view('pages.profile.page', [
+            'hash'=>$hash,
+            'user'=> $user
+        ]);
+    }
+
+    public function downloadVcard(string $hash)
+    {
+        return redirect(Storage::disk('s3')->url($hash.'.vcf'));
+    }
+}

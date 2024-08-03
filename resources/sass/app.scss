@@ -1,0 +1,90 @@
+// variables
+$themeMainColor: #a024f4;
+$themeAccentColor: #1a3aa1;
+
+.page{
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #efefef;
+    padding-bottom: 10px;
+
+    .btn{
+        font-weight: 500;
+    }
+
+    img{
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .page__avatar{
+        margin-bottom: 20px;
+    }
+
+    ul,li{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    a:not([class]){
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .page-card{
+        padding: 0 15px;
+    }
+
+    .social-links-list{
+        font-size: 25px;
+
+        .bi{
+            color: $themeMainColor
+        }
+    }
+
+    .basic-info-list{
+        font-size: 17px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 0 20px;
+
+
+        li{
+            padding: 15px 0;
+        }
+
+        li:not(:last-child){
+            border-bottom: 1px solid #e6e4e4;
+        }
+
+        .bi{
+            color: $themeMainColor;
+            font-size: 20px;
+        }
+    }
+
+    .page-btn{
+        background: $themeMainColor;
+        color: #fff;
+        bottom: 10px;
+        border-radius: 20px;
+        padding: 13px 0;
+
+        .bi{
+            font-size: 20px;
+        }
+    }
+
+    .promo-btn{
+        border: 2px solid $themeMainColor;
+        border-radius: 20px;
+        padding: 13px 0;
+        color: $themeMainColor;
+        margin-bottom: 10px;
+
+    }
+
+}
