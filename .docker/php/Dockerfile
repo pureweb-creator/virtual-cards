@@ -1,12 +1,6 @@
 FROM php:8.2-fpm
 
 WORKDIR /app
-ARG APP_ENV
-ARG UNAME=docker
-ARG GID=1000
-ARG UID=1000
-RUN groupadd -g $GID -o $UNAME
-RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 
 RUN apt-get update \
     && apt-get install -y libmemcached-dev zlib1g-dev libssl-dev \
@@ -25,3 +19,11 @@ RUN if [ "$APP_ENV" != "production" ]; then \
         pecl install xdebug && \
         docker-php-ext-enable xdebug; \
     fi
+
+
+ARG APP_ENV
+ARG UNAME=docker
+ARG GID=1000
+ARG UID=1000
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
