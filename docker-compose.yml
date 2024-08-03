@@ -3,6 +3,7 @@ services:
     image: 'nginx:latest'
     ports:
       - '80:80'
+      - '443:443'
     restart: always
     depends_on:
       - 'php-fpm'
@@ -10,6 +11,7 @@ services:
       - './:/app'
       - './.docker/nginx:/etc/nginx/conf.d'
       - './.docker/log/nginx:/var/log/nginx'
+      - './.docker/certbot/conf:/etc/letsencrypt'
   php-fpm:
     user: '1000'
     extra_hosts:
@@ -27,7 +29,7 @@ services:
     volumes:
       - './:/app'
       - './.docker/php/conf.d/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini'
-      - './.docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
+      #- './.docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
   memcached:
     image: 'memcached:latest'
     ports:
@@ -45,5 +47,14 @@ services:
     volumes:
       - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
       - 'mysqldata:/var/lib/mysql'
+
+    certbot:
+        image: 'certbot/certbot'
+        restart: 'unless-stopped'
+        volumes:
+            - './.docker/certbot/conf:/etc/letsencrypt'
+            - './.docker/certbot/www:/app/certbot'
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
 volumes:
   mysqldata:
