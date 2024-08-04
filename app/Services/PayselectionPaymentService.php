@@ -19,7 +19,7 @@ class PayselectionPaymentService implements PaymentGateway
         return hash_hmac('sha256', $signature_string, $key);
     }
 
-    public function init()
+    public function init(PaymentDTO $dto)
     {
         $request_id = time();
 

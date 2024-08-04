@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\PaymentGateway;
+use App\DTO\PaymentDTO;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,10 +63,8 @@ class EpayPaymentService implements PaymentGateway
             'auth' => $token
         ]);
     }
-    public function init()
-    {
-
-    }
+    public function init(PaymentDTO $dto)
+    {}
 
     public function getStatus($orderId)
     {

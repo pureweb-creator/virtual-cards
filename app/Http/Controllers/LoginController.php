@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\DTO\UserProfileDTO;
 use App\Http\Requests\LoginRequest;
-use App\Models\User;
 use App\Services\AuthService;
+use Google\Service\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -31,15 +31,26 @@ class LoginController extends Controller
         ]);
     }
 
-    public function authGoogleRedirect()
+    public function authGoogleRedirect(AuthService $authService)
     {
         return Socialite::driver('google')
             ->scopes(['email', 'profile'])
             ->redirect();
+
+//        return redirect(
+//            $authService->createAuthUrl()
+//        );
     }
 
-    public function authGoogleCallback(AuthService $authService)
+    /**
+     * @throws Exception
+     */
+    public function authGoogleCallback(Request $request, AuthService $authService)
     {
+
+//        $code = $request->code;
+//        $user = $authService->retrieveUserDetails($code);
+
         $user = Socialite::driver('google')->user();
 
         $dto = new UserProfileDTO(

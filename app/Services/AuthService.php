@@ -5,6 +5,8 @@ namespace App\Services;
 use App\DTO\UserProfileDTO;
 use App\Models\User;
 use Google\Client;
+use Google\Service\Exception;
+use Google\Service\Oauth2;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +18,24 @@ readonly class AuthService
     {
         $this->googleClient->setClientId(config('services.google.client_id'));
         $this->googleClient->setClientSecret(config('services.google.client_secret'));
-        $this->googleClient->setRedirectUri(route('auth.google.redirect'));
+        $this->googleClient->setRedirectUri(config('services.google.redirect'));
+        $this->googleClient->addScope(['email', 'profile']);
+    }
+
+    public function createAuthUrl(): string
+    {
+        return $this->googleClient->createAuthUrl();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrieveUserDetails($code): Oauth2\Userinfo
+    {
+        $token = $this->googleClient->fetchAccessTokenWithAuthCode($code);
+        $this->googleClient->setAccessToken($token);
+        $user = new Oauth2($this->googleClient);
+        return $user->userinfo->get();
     }
 
     public function login(UserProfileDTO $dto): bool
@@ -77,6 +96,7 @@ readonly class AuthService
         ]);
 
         Auth::login($user, true);
+
         return $user;
     }
 }

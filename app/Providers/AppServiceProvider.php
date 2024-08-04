@@ -3,11 +3,12 @@
 namespace App\Providers;
 
 use App\Contracts\PaymentGateway;
-use App\Services\EpayPaymentService;
+use App\Services\AuthService;
 use App\Services\ProfileService;
 use App\Services\StripePaymentService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Google\Client;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ProfileService::class, function (){
             return new ProfileService();
+        });
+
+        $this->app->singleton(AuthService::class, function (){
+            return new AuthService(
+                new Client()
+            );
         });
     }
 
