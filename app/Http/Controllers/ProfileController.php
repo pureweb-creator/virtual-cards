@@ -10,6 +10,7 @@ use App\Http\Requests\StoreUserLocationRequest;
 use App\Http\Requests\StoreUserAvatarRequest;
 use App\Http\Requests\StoreUserInfoRequest;
 use App\Http\Requests\StoreUserSocialLinksRequest;
+use App\Jobs\GenerateVcard;
 use App\Models\SocialNetwork;
 use App\Models\User;
 use App\Services\ProfileService;
@@ -26,10 +27,9 @@ class ProfileController extends Controller
     public function index()
     {
         $userPage = route('user.page', Auth::user()->user_hash);
-        $user = Auth::user()->load(['socialNetworks', 'locations']);
 
         return view('pages.profile.dashboard', [
-            'user' => $user,
+            'user' => Auth::user()->load(['socialNetworks', 'locations']),
             'qr' => (new QRCode())->render($userPage),
             'uniqueLink' => $userPage,
             'socialNetworks' => SocialNetwork::all(),
@@ -43,7 +43,6 @@ class ProfileController extends Controller
         );
 
         $this->profileService->update($userProfileDTO);
-        $this->profileService->generateVcard();
 
         return back()->with([
             'message'=>'Info updated successfully',
@@ -57,7 +56,6 @@ class ProfileController extends Controller
         );
 
         $this->profileService->updateUserLocation($userAddressDTO);
-        $this->profileService->generateVcard();
 
         return back()->with([
             'messageAddress'=>'Info updated successfully',
@@ -70,7 +68,6 @@ class ProfileController extends Controller
         $this->profileService->storeAvatar(
             new UserAvatarDTO($request->image)
         );
-        $this->profileService->generateVcard();
 
         return response()->json([
             'success'=>'true'
@@ -80,7 +77,6 @@ class ProfileController extends Controller
     public function destroyAvatar()
     {
         $this->profileService->destroyAvatar();
-        $this->profileService->generateVcard();
 
         return back()->with([
             'messageAvatar'=>'Profile picture deleted successfully',
@@ -91,7 +87,6 @@ class ProfileController extends Controller
     {
         $dto = new SocialLinkDTO(...$request->validated());
         $this->profileService->updateUserSocialLinks($dto);
-        $this->profileService->generateVcard();
 
         return back()->with([
             'messageSocLink'=>'Info updated successfully',

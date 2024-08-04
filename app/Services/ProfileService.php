@@ -6,6 +6,7 @@ use App\DTO\LocationDTO;
 use App\DTO\SocialLinkDTO;
 use App\DTO\UserAvatarDTO;
 use App\DTO\UserProfileDTO;
+use App\Jobs\GenerateVcard;
 use App\Models\Locations;
 use App\Models\SocialNetwork;
 use App\Models\User;
@@ -28,6 +29,10 @@ class ProfileService
             'company'=>$dto->company,
             'job_title'=>$dto->job_title
         ]);
+
+        GenerateVcard::dispatch(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
     }
 
     public function storeAvatar(UserAvatarDTO $dto): void
@@ -51,6 +56,10 @@ class ProfileService
 
         $user->avatar = Storage::disk('s3')->url($image_name);
         $user->save();
+
+        GenerateVcard::dispatch(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
     }
 
     public function updateUserSocialLinks(SocialLinkDTO $dto): void
@@ -74,6 +83,10 @@ class ProfileService
         foreach ($socialLinks as $socialNetworkId=>$attributes) {
             $user->socialNetworks()->syncWithoutDetaching([$socialNetworkId=>$attributes]);
         }
+
+        GenerateVcard::dispatch(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
     }
 
     public function updateUserLocation(LocationDTO $dto): void
@@ -84,20 +97,23 @@ class ProfileService
             'street' => $dto->street,
             'postcode' => $dto->postcode,
         ]);
+
+        GenerateVcard::dispatch(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
     }
 
-    public function generateVcard(): string
+    public function generateVcard(User $user): string
     {
-        $vcard = new VCard();
-        $user = Auth::user()->load(['socialNetworks', 'locations']);
+//        $user ??= Auth::user()->load(['socialNetworks', 'locations']);
         $userLocation = $user->locations->first();
-
         $lastname = $user->last_name;
         $firstname = $user->first_name;
         $additional = '';
         $prefix = '';
         $suffix = '';
 
+        $vcard = new VCard();
         $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
 
         $vcard->addCompany($user->company);
@@ -119,7 +135,7 @@ class ProfileService
         }
 
         if (!is_null($user->avatar)) {
-            $vcard->addPhoto(Auth::user()->avatar);
+            $vcard->addPhoto($user->avatar);
         }
 
         return Storage::disk('s3')->put($user->user_hash.'.vcf', $vcard->getOutput(), 'public');
@@ -132,5 +148,9 @@ class ProfileService
         Storage::disk('s3')->delete($avatarFileName);
         $user->avatar = null;
         $user->save();
+
+        GenerateVcard::dispatch(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
     }
 }
