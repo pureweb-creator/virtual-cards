@@ -83,6 +83,15 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function generateCard(ProfileService $profileService)
+    {
+        $profileService->generateVcard(Auth::user()->load(['socialNetworks', 'locations']));
+
+        return back()->with([
+            'messageCard'=>'Card updated successfully',
+        ]);
+    }
+
     public function updateUserSocialLinks(StoreUserSocialLinksRequest $request)
     {
         $dto = new SocialLinkDTO(...$request->validated());

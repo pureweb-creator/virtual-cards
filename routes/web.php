@@ -55,6 +55,8 @@ Route::middleware(['auth', 'verified', 'paid'])->group(function (){
         ->name('profile.upload-avatar');
     Route::delete('/profile/avatar/delete', [ProfileController::class, 'destroyAvatar'])
         ->name('profile.delete-avatar');
+
+    Route::get('/profile/generate-card', [ProfileController::class, 'generateCard'])->name('profile.generate-card');
 });
 
 Route::get('/pricing', [PaymentController::class, 'index'])->name('pricing');

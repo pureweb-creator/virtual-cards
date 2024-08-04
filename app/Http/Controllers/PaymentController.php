@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Contracts\PaymentGateway;
 use App\DTO\PaymentDTO;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
 
 class PaymentController extends Controller

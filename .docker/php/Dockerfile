@@ -4,7 +4,7 @@ WORKDIR /app
 ARG APP_ENV
 
 RUN apt-get update \
-    && apt-get install -y libmemcached-dev zlib1g-dev libssl-dev \
+    && apt-get install -y libmemcached-dev zlib1g-dev libssl-dev supervisor \
     && yes '' | pecl install -f memcached-3.2.0 \
     && docker-php-ext-enable memcached \
     && docker-php-ext-install mysqli pdo pdo_mysql \
@@ -14,16 +14,16 @@ RUN apt-get update \
     git \
     zip \
     unzip \
-    vim
+    vim \
+    nano
 
 RUN if [ "$APP_ENV" != "production" ]; then \
         pecl install xdebug && \
         docker-php-ext-enable xdebug; \
     fi
 
-
 ARG UNAME=docker
 ARG GID=1000
 ARG UID=1000
 RUN groupadd -g $GID -o $UNAME
-RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash

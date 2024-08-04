@@ -48,7 +48,7 @@
 
             @if($user->locations->isNotEmpty())
                 <li class="d-flex align-items-center justify-content-between">
-                    <a href="https://maps.google.com/?q={{$user->locations->first()->street ?? ''}}{{$user->locations->first()->city ?? ''}}{{$user->locations->first()->country ?? ''}}{{$user->locations->first()->postcode ?? ''}}" target="_blank">
+                    <a href="https://maps.google.com/?q={{$user->locations->first()->street ?? ''}} {{$user->locations->first()->city ?? ''}} {{$user->locations->first()->country ?? ''}} {{$user->locations->first()->postcode ?? ''}}" target="_blank">
                         {{$user->locations->first()->street ?? ''}}
                         {{$user->locations->first()->city ?? ''}}
                         {{$user->locations->first()->country ?? ''}}

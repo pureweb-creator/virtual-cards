@@ -66,7 +66,7 @@ readonly class AuthService
                 'email_verified_at'=>now()
             ]);
 
-            Auth::login($user);
+            Auth::login($user, true);
             return $user;
         }
 
@@ -76,7 +76,7 @@ readonly class AuthService
             'google_refresh_token' => $dto->google_refresh_token,
         ]);
 
-        Auth::login($user);
+        Auth::login($user, true);
         return $user;
     }
 }

@@ -324,6 +324,11 @@
                                 Your personal card can be found here: <a href="{{$uniqueLink}}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" target="_blank">{{$uniqueLink}}</a>
                             </p>
                             <a href="{{route('user.vcard.download', Auth::user()->user_hash)}}" class="btn btn-primary d-iflex align-items-center"><i class="bi bi-download me-1"></i> Download vcard</a>
+                            <a href="{{route('profile.generate-card')}}" class="btn btn-info mt-2 d-iflex align-items-center"><i class="bi bi-arrow-clockwise me-1"></i> Manually generate a card</a>
+                            <p class="small mt-1"><em>Your card is generated automatically after you update your data. But, if something gets wrong you always can regenerate it manually.</em></p>
+                            @session('messageCard')
+                                <p class="text-success">{{$value}}</p>
+                            @endsession
                         </div>
                     </div>
                 </x-dashboard-sidebar>
