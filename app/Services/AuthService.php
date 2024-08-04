@@ -53,7 +53,7 @@ readonly class AuthService
             'email'=>$dto->email,
             'password'=>$dto->password,
             'avatar'=>$dto->avatar,
-            'user_hash'=>substr(strtoupper(hash('sha256', time())), -8),
+            'user_hash'=>strtoupper(uniqid()),
             'trial_expiration_time'=>now()->addDays((int)config('app.trial_duration')),
             'is_subscribed'=>true
         ]);

@@ -21,7 +21,7 @@ class PayselectionPaymentService implements PaymentGateway
 
     public function init(PaymentDTO $dto)
     {
-        $request_id = time();
+        $request_id = uniqid();
 
         $body = json_encode([
             'PaymentRequest' => [
