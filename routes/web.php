@@ -60,7 +60,10 @@ Route::middleware(['auth', 'verified', 'paid'])->group(function (){
 });
 
 Route::get('/pricing', [PaymentController::class, 'index'])->name('pricing');
-Route::get('/links/{hash}', [ProfileController::class, 'page'])->name('user.page');
-Route::get('/links/{hash}/download', [ProfileController::class, 'downloadVcard'])->name('user.vcard.download');
 
-// URL::forceScheme('https');
+Route::get('/links/{hash}', [ProfileController::class, 'page'])
+    ->name('user.page')
+    ->middleware(['paidNonAuth']);
+Route::get('/links/{hash}/download', [ProfileController::class, 'downloadVcard'])
+    ->name('user.vcard.download')
+    ->middleware(['paidNonAuth']);
