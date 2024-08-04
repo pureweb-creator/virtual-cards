@@ -30,9 +30,11 @@ class ProfileService
             'job_title'=>$dto->job_title
         ]);
 
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        $this->generateVcard();
+
+//        GenerateVcard::dispatch(
+//            Auth::user()->load(['socialNetworks', 'locations'])
+//        );
     }
 
     public function storeAvatar(UserAvatarDTO $dto): void
@@ -57,9 +59,11 @@ class ProfileService
         $user->avatar = Storage::disk('s3')->url($image_name);
         $user->save();
 
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        $this->generateVcard();
+
+//        GenerateVcard::dispatch(
+//            Auth::user()->load(['socialNetworks', 'locations'])
+//        );
     }
 
     public function updateUserSocialLinks(SocialLinkDTO $dto): void
@@ -84,9 +88,11 @@ class ProfileService
             $user->socialNetworks()->syncWithoutDetaching([$socialNetworkId=>$attributes]);
         }
 
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        $this->generateVcard();
+
+//        GenerateVcard::dispatch(
+//            Auth::user()->load(['socialNetworks', 'locations'])
+//        );
     }
 
     public function updateUserLocation(LocationDTO $dto): void
@@ -97,15 +103,16 @@ class ProfileService
             'street' => $dto->street,
             'postcode' => $dto->postcode,
         ]);
+        $this->generateVcard();
 
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+//        GenerateVcard::dispatch(
+//            Auth::user()->load(['socialNetworks', 'locations'])
+//        );
     }
 
-    public function generateVcard(User $user): string
+    public function generateVcard(User $user=null): string
     {
-//        $user ??= Auth::user()->load(['socialNetworks', 'locations']);
+        $user ??= Auth::user()->load(['socialNetworks', 'locations']);
         $userLocation = $user->locations->first();
         $lastname = $user->last_name;
         $firstname = $user->first_name;
@@ -149,8 +156,10 @@ class ProfileService
         $user->avatar = null;
         $user->save();
 
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        $this->generateVcard();
+
+//        GenerateVcard::dispatch(
+//            Auth::user()->load(['socialNetworks', 'locations'])
+//        );
     }
 }
