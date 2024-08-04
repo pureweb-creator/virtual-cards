@@ -45,6 +45,12 @@ services:
     volumes:
       - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
       - 'mysqldata:/var/lib/mysql'
-
+  supervisor:
+      build:
+          context: './.docker/supervisor'
+          dockerfile: 'Dockerfile'
+      container_name: 'supervisor'
+      volumes:
+          - './:/app'
 volumes:
   mysqldata:
