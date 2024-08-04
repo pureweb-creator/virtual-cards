@@ -74,7 +74,7 @@
         </ul>
 
         {{--    <a href="{{route('user.vcard.download', $user->user_hash)}}" class="btn btn-info">Download vcard</a>--}}
-        <a href="{{Storage::disk('s3')->url($hash.'.vcf')}}" download class="btn w-100 page-btn sticky-bottom d-flex align-items-center justify-content-center">
+        <a href="{{route('user.vcard.download', $user->user_hash)}}" download class="btn w-100 page-btn sticky-bottom d-flex align-items-center justify-content-center">
             <i class="bi bi-download me-4"></i>
             Save to your contacts
         </a>
