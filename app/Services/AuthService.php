@@ -9,6 +9,7 @@ use Google\Service\Exception;
 use Google\Service\Oauth2;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 readonly class AuthService
 {
@@ -53,7 +54,7 @@ readonly class AuthService
             'email'=>$dto->email,
             'password'=>$dto->password,
             'avatar'=>$dto->avatar,
-            'user_hash'=>strtoupper(uniqid()),
+            'user_hash'=>strtoupper(Str::random(10)),
             'trial_expiration_time'=>now()->addDays((int)config('app.trial_duration')),
             'is_subscribed'=>true
         ]);

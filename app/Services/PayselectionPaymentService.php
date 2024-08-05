@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\PaymentGateway;
 use App\DTO\PaymentDTO;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PayselectionPaymentService implements PaymentGateway
 {
@@ -21,7 +22,7 @@ class PayselectionPaymentService implements PaymentGateway
 
     public function init(PaymentDTO $dto)
     {
-        $request_id = uniqid();
+        $request_id = Str::random(10);
 
         $body = json_encode([
             'PaymentRequest' => [
