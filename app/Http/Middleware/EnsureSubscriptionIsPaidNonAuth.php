@@ -19,7 +19,7 @@ class EnsureSubscriptionIsPaidNonAuth
         $hash = explode('/', request()->path());
         $hash = $hash[1];
 
-        $user = User::where('user_hash', $hash)->first();
+        $user = User::where('user_hash', $hash)->firstOrFail();
 
         if ($user->is_subscribed && $user->trial_expiration_time->gt(now())){
             return $next($request);
