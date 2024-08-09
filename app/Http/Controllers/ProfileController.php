@@ -85,7 +85,9 @@ class ProfileController extends Controller
 
     public function generateCard(ProfileService $profileService)
     {
-        $profileService->generateVcard(Auth::user()->load(['socialNetworks', 'locations']));
+        $profileService->generateVcard(
+            Auth::user()->load(['socialNetworks', 'locations'])
+        );
 
         return back()->with([
             'messageCard'=>'Card updated successfully',
@@ -116,6 +118,14 @@ class ProfileController extends Controller
 
     public function downloadVcard(string $hash)
     {
-        return redirect(Storage::disk('s3')->url($hash.'.vcf'));
+        $file = Storage::disk('s3')->get($hash.'.vcf');
+
+        $headers = [
+            'Content-Type' => 'text/vcf',
+            'Content-Disposition' => "attachment; filename={$hash}.vcf",
+            'filename'=> $hash.'.vcf'
+        ];
+
+        return response($file, 200, $headers);
     }
 }

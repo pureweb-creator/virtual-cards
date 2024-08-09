@@ -50,6 +50,8 @@ services:
           context: './.docker/supervisor'
           dockerfile: 'Dockerfile'
       container_name: 'supervisor'
+      depends_on:
+          -   'php-fpm'
       volumes:
           - './:/app'
 volumes:
