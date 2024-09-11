@@ -1,11 +1,11 @@
 <x-app class="page">
-    <img src="{{$user->avatar ?? 'https://via.placeholder.com/160'}}" class="page__avatar" alt="profile picture">
+    <img src="{{$user->avatar ? Storage::url($user->avatar) : 'https://via.placeholder.com/160'}}" class="page__avatar" alt="profile picture">
     <h1 class="text-center ">{{$user->first_name}} {{$user->last_name ?? ''}}</h1>
 
     <div class="page-card">
         <ul class="d-flex align-items-center justify-content-center social-links-list">
             @foreach($user->socialNetworks as $link)
-                @if(!is_null($link->pivot->link) && !$link->pivot->hidden)
+                @if(!$link->pivot->hidden && !is_null($link->pivot->link))
                     <li class="me-3">
                         <a href="{{$link->url_pattern}}{{$link->pivot->link}}"><i class="bi bi-{{$link->name}}"></i></a>
                     </li>
@@ -46,13 +46,13 @@
                 <i class="bi bi-envelope ms-4"></i>
             </li>
 
-            @if($user->locations->isNotEmpty())
+            @if(!is_null($user->location->street) || !is_null($user->location->city) || !is_null($user->location->country) || !is_null($user->location->postcode))
                 <li class="d-flex align-items-center justify-content-between">
-                    <a href="https://maps.google.com/?q={{$user->locations->first()->street ?? ''}} {{$user->locations->first()->city ?? ''}} {{$user->locations->first()->country ?? ''}} {{$user->locations->first()->postcode ?? ''}}" target="_blank">
-                        {{$user->locations->first()->street ?? ''}}
-                        {{$user->locations->first()->city ?? ''}}
-                        {{$user->locations->first()->country ?? ''}}
-                        {{$user->locations->first()->postcode ?? ''}}
+                    <a href="https://maps.google.com/?q={{$user->location->street ?? ''}} {{$user->location->city ?? ''}} {{$user->location->country ?? ''}} {{$user->location->postcode ?? ''}}" target="_blank">
+                        {{$user->location->street ?? ''}}
+                        {{$user->location->city ?? ''}}
+                        {{$user->location->country ?? ''}}
+                        {{$user->location->postcode ?? ''}}
                     </a>
                     <i class="bi bi-pin-map ms-4"></i>
                 </li>
@@ -74,7 +74,7 @@
         </ul>
 
         {{--    <a href="{{route('user.vcard.download', $user->user_hash)}}" class="btn btn-info">Download vcard</a>--}}
-        <a href="{{route('user.vcard.download', $user->user_hash)}}" download class="btn w-100 page-btn sticky-bottom d-flex align-items-center justify-content-center">
+        <a href="{{route('user.vcard.download', $user->user_hash)}}" class="btn w-100 page-btn sticky-bottom d-flex align-items-center justify-content-center">
             <i class="bi bi-download me-4"></i>
             Save to your contacts
         </a>

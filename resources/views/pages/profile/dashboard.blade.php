@@ -153,7 +153,7 @@
                             <div class="accordion-body">
                                 <h3>Profile picture</h3>
                                 @if (!is_null($user->avatar))
-                                    <img src="{{$user->avatar}}" class="img-thumbnail rounded" width="160" alt="profile picture">
+                                    <img src="{{Storage::url($user->avatar)}}" class="img-thumbnail rounded" width="160" alt="profile picture">
 
                                     <form action="{{route('profile.delete-avatar')}}" method="POST">
                                         @session('messageAvatar')
@@ -232,22 +232,22 @@
                                     <h3>Address info</h3>
                                     <div class="form-group mb-3">
                                         <label for="country" class="form-label">Country</label>
-                                        <input id="country" type="text" name="country" class="form-control" value="{{$user->locations[0]->country ?? old('country')}}" autocomplete="country" placeholder="">
+                                        <input id="country" type="text" name="country" class="form-control" value="{{$user->location->country ?? old('country')}}" autocomplete="country" placeholder="">
                                         @error('country') <span class="text-danger">{{$message}}</span> @enderror
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="city" class="form-label">City</label>
-                                        <input id="city" type="text" name="city" class="form-control" value="{{$user->locations[0]->city ?? old('city')}}" autocomplete="address-level2" placeholder="">
+                                        <input id="city" type="text" name="city" class="form-control" value="{{$user->location->city ?? old('city')}}" autocomplete="address-level2" placeholder="">
                                         @error('city') <span class="text-danger">{{$message}}</span> @enderror
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="street" class="form-label">Street</label>
-                                        <input id="street" type="text" name="street" class="form-control" value="{{$user->locations[0]->street ?? old('street')}}" autocomplete="street-address" placeholder="">
+                                        <input id="street" type="text" name="street" class="form-control" value="{{$user->location->street ?? old('street')}}" autocomplete="street-address" placeholder="">
                                         @error('street') <span class="text-danger">{{$message}}</span> @enderror
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="postcode" class="form-label">Postal Code</label>
-                                        <input id="postcode" type="text" name="postcode" class="form-control" value="{{$user->locations[0]->postcode ?? old('postcode')}}" autocomplete="postal-code" placeholder="">
+                                        <input id="postcode" type="text" name="postcode" class="form-control" value="{{$user->location->postcode ?? old('postcode')}}" autocomplete="postal-code" placeholder="">
                                         @error('postcode') <span class="text-danger">{{$message}}</span> @enderror
                                     </div>
 
@@ -290,9 +290,7 @@
                                                 <input
                                                     class="form-check-input"
                                                     type="checkbox"
-                                                    @if(isset($user->socialNetworks[$loop->index]->pivot->hidden))
                                                         {{$user->socialNetworks[$loop->index]->pivot->hidden ? 'checked' : ''}}
-                                                    @endif
                                                     name="{{$network->name}}_hidden"
                                                     id="{{$network->name}}_hidden"
                                                 >
@@ -405,6 +403,7 @@
                 cropper = new Cropper(image, {
                     aspectRatio: 1,
                     viewMode: 3,
+                    dragMode: 'move',
                     preview: '.preview'
                 });
             }).on('hidden.bs.modal', function () {

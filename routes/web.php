@@ -7,6 +7,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\VCardController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -56,14 +57,14 @@ Route::middleware(['auth', 'verified', 'paid'])->group(function (){
     Route::delete('/profile/avatar/delete', [ProfileController::class, 'destroyAvatar'])
         ->name('profile.delete-avatar');
 
-    Route::get('/profile/generate-card', [ProfileController::class, 'generateCard'])->name('profile.generate-card');
+    Route::get('/profile/generate-card', [VCardController::class, 'generate'])->name('profile.generate-card');
 });
 
 Route::get('/pricing', [PaymentController::class, 'index'])->name('pricing');
 
-Route::get('/links/{hash}', [ProfileController::class, 'page'])
+Route::get('/links/{hash}', [ProfileController::class, 'getUserPage'])
     ->name('user.page')
     ->middleware(['paidNonAuth']);
-Route::get('/links/{hash}/download', [ProfileController::class, 'downloadVcard'])
+Route::get('/links/{hash}/download', [VCardController::class, 'download'])
     ->name('user.vcard.download')
     ->middleware(['paidNonAuth']);

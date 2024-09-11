@@ -4,17 +4,13 @@ namespace App\Services;
 
 use App\DTO\LocationDTO;
 use App\DTO\SocialLinkDTO;
-use App\DTO\UserAvatarDTO;
 use App\DTO\UserProfileDTO;
 use App\Jobs\GenerateVcard;
-use App\Models\Locations;
+use App\Models\Location;
 use App\Models\SocialNetwork;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use JeroenDesloovere\VCard\VCard;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileService
 {
@@ -31,35 +27,10 @@ class ProfileService
         ]);
 
         GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
+            Auth::id()
         );
-    }
 
-    public function storeAvatar(UserAvatarDTO $dto): void
-    {
-        $image = $dto->base64ImgString;
-
-        list(, $image) = explode(';', $image);
-        list(, $image) = explode(',', $image);
-        $image = base64_decode($image);
-        $image_name = Str::random(40).'.png';
-
-        $user = Auth::user();
-
-        if (!is_null($user->avatar)){
-            $avatarFileName = explode(config('filesystems.disks.s3.url'), $user->avatar)[1];
-
-            Storage::disk('s3')->delete($avatarFileName);
-        }
-
-        Storage::disk('s3')->put($image_name, $image, 'public');
-
-        $user->avatar = Storage::disk('s3')->url($image_name);
-        $user->save();
-
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        Cache::forget('user');
     }
 
     public function updateUserSocialLinks(SocialLinkDTO $dto): void
@@ -85,13 +56,15 @@ class ProfileService
         }
 
         GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
+            Auth::id()
         );
+
+        Cache::forget('user');
     }
 
-    public function updateUserLocation(LocationDTO $dto): void
+    public function updateUserAddress(LocationDTO $dto): void
     {
-        Locations::updateOrCreate(['user_id' => Auth::id()], [
+        Location::updateOrCreate(['user_id' => Auth::id()], [
             'country' => $dto->country,
             'city' => $dto->city,
             'street' => $dto->street,
@@ -99,58 +72,23 @@ class ProfileService
         ]);
 
         GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
+            Auth::id()
         );
+
+        Cache::forget('user');
     }
 
-    public function generateVcard(User $user): string
+    public function getUserProfile($hash)
     {
-//        $user ??= Auth::user()->load(['socialNetworks', 'locations']);
-        $userLocation = $user->locations->first();
-        $lastname = $user->last_name;
-        $firstname = $user->first_name;
-        $additional = '';
-        $prefix = '';
-        $suffix = '';
+        if (!$user = Cache::get('user')) {
 
-        $vcard = new VCard();
-        $vcard->addName($lastname, $firstname, $additional, $prefix, $suffix);
+            $user = User::where('user_hash', $hash)
+                ->with(['socialNetworks', 'location'])
+                ->firstOrFail();
 
-        $vcard->addCompany($user->company);
-        $vcard->addJobtitle($user->job_title);
-        $vcard->addEmail($user->email);
-        $vcard->addPhoneNumber($user->home_tel, 'PREF;WORK');
-        $vcard->addPhoneNumber($user->work_tel, 'WORK');
-
-        if (!is_null($userLocation)){
-            $vcard->addAddress(null, null, $userLocation->street, $userLocation->city, null, $userLocation->postcode, $userLocation->country);
+            Cache::put('user', $user);
         }
 
-        $vcard->addURL($user->website);
-
-        foreach ($user->socialNetworks as $socialNetwork) {
-            if (!is_null($socialNetwork->pivot->link) && !$socialNetwork->pivot->hidden) {
-                $vcard->addURL($socialNetwork->url_pattern.''.$socialNetwork->pivot->link);
-            }
-        }
-
-        if (!is_null($user->avatar)) {
-            $vcard->addPhoto($user->avatar);
-        }
-
-        return Storage::disk('s3')->put($user->user_hash.'.vcf', $vcard->getOutput(), 'public');
-    }
-
-    public function destroyAvatar(): void
-    {
-        $user = Auth::user();
-        $avatarFileName = explode(config('filesystems.disks.s3.url'), $user->avatar)[1];
-        Storage::disk('s3')->delete($avatarFileName);
-        $user->avatar = null;
-        $user->save();
-
-        GenerateVcard::dispatch(
-            Auth::user()->load(['socialNetworks', 'locations'])
-        );
+        return $user;
     }
 }

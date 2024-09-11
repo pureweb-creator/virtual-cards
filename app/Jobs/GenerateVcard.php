@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\User;
-use App\Services\ProfileService;
+use App\Services\VCardService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -15,15 +14,15 @@ class GenerateVcard implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        private readonly User $user
+        private readonly int|null|string $userId
     )
     {}
 
     /**
      * Execute the job.
      */
-    public function handle(ProfileService $profileService): void
+    public function handle(VCardService $VCardService): void
     {
-        $profileService->generateVcard($this->user);
+        $VCardService->generate($this->userId);
     }
 }

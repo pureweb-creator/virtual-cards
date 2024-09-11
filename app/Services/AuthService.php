@@ -80,7 +80,7 @@ readonly class AuthService
                 'google_id' => $dto->google_id,
                 'google_token' => $dto->google_token,
                 'google_refresh_token' => $dto->google_refresh_token,
-                'user_hash'=>substr(strtoupper(hash('sha256', time())), -8),
+                'user_hash'=>strtoupper(Str::random(10)),
                 'trial_expiration_time'=>now()->addDays((int)config('app.trial_duration')),
                 'is_subscribed'=>true,
                 'email_verified_at'=>now()

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -76,8 +76,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
             ->withTimestamps();
     }
 
-    public function locations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function location(): HasOne
     {
-        return $this->hasMany(Locations::class);
+        return $this->hasOne(Location::class);
     }
 }
