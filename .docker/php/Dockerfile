@@ -21,6 +21,8 @@ RUN if [ "$APP_ENV" != "production" ]; then \
         docker-php-ext-enable xdebug; \
     fi
 
+COPY conf.d/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 ARG UNAME=docker
 ARG GID=1000
 ARG UID=1000
