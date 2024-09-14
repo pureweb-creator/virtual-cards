@@ -23,7 +23,7 @@
 
                             <div class="dropdown text-end">
                                 <a href="#" class="d-block nav-link text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{Auth::user()->avatar ?? 'https://via.placeholder.com/160'}}" alt="mdo" width="32" height="32" class="rounded-circle">
+                                    <img src="{{Storage::url(Auth::user()->avatar) ?? 'https://via.placeholder.com/160'}}" alt="mdo" width="32" height="32" class="rounded-circle">
                                 </a>
                                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
                                     <li><a class="dropdown-item" href="{{route('profile.dashboard')}}">Profile</a></li>
