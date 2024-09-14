@@ -9,6 +9,7 @@
         "ext-curl": "*",
         "chillerlan/php-qrcode": "^5.0",
         "google/apiclient": "^2.15.0",
+        "itsgoingd/clockwork": "^5.2",
         "jeroendesloovere/vcard": "dev-master",
         "laravel/framework": "^11.9",
         "laravel/socialite": "^5.15",
