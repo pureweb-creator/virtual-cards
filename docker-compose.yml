@@ -20,14 +20,13 @@ services:
     build:
       context: './.docker/php'
       dockerfile: './Dockerfile'
-      args:
-        APP_ENV: '${APP_ENV}'
     depends_on:
       - 'mysql'
       - 'memcached'
     volumes:
       - './:/app'
       - './.docker/php/conf.d/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini'
+      - './.docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
   memcached:
     image: 'memcached:latest'
     ports:
@@ -44,7 +43,7 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
       - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
-      - 'mysqldata:/var/lib/mysql'
+      - './.docker/mysql/mysqldata:/var/lib/mysql'
   certbot:
     image: 'certbot/certbot'
     restart: unless-stopped
@@ -52,14 +51,16 @@ services:
         - './.docker/certbot/conf:/etc/letsencrypt'
         - './.docker/certbot/www:/var/www/certbot'
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  supervisor:
+  horizon:
+      user: '1000'
+      tty: true
       build:
-          context: './.docker/supervisor'
+          context: './.docker/horizon'
           dockerfile: 'Dockerfile'
-      container_name: 'supervisor'
+      entrypoint: 'php artisan queue:work'
+      restart: always
       depends_on:
-          -   'php-fpm'
+          - 'php-fpm'
+          - 'mysql'
       volumes:
           - './:/app'
-volumes:
-  mysqldata:

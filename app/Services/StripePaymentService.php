@@ -29,6 +29,7 @@ readonly class StripePaymentService implements PaymentGateway
         };
 
         $checkout_session = Session::create([
+            'payment_method_types' => ['card'],
             'line_items' => [[
                 'price' => $priceId,
                 'quantity' => 1,
