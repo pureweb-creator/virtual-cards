@@ -26,6 +26,7 @@ class RegisterRequest extends FormRequest
             'first_name'=>'required',
             'email'=>'required|email|unique:users',
             'password'=>['required', 'confirmed', Password::defaults()],
+            'remember_me'=>'boolean'
         ];
     }
 }

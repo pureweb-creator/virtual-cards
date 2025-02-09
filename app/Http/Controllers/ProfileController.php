@@ -5,20 +5,16 @@ namespace App\Http\Controllers;
 use App\DTO\LocationDTO;
 use App\DTO\SocialLinkDTO;
 use App\DTO\UserAvatarDTO;
-use App\DTO\UserProfileDTO;
+use App\DTO\UserProfileUpdateDTO;
 use App\Http\Requests\StoreUserLocationRequest;
 use App\Http\Requests\StoreUserAvatarRequest;
 use App\Http\Requests\StoreUserInfoRequest;
 use App\Http\Requests\StoreUserSocialLinksRequest;
 use App\Models\SocialNetwork;
-use App\Models\User;
 use App\Services\AvatarService;
 use App\Services\ProfileService;
-use App\Services\VCardService;
 use chillerlan\QRCode\QRCode;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -40,7 +36,7 @@ class ProfileController extends Controller
 
     public function update(StoreUserInfoRequest $request)
     {
-        $userProfileDTO = new UserProfileDTO(
+        $userProfileDTO = new UserProfileUpdateDTO(
             ...$request->validated(),
         );
 

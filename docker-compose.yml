@@ -3,30 +3,24 @@ services:
     image: 'nginx:latest'
     ports:
       - '80:80'
-      - '443:443'
     restart: always
     depends_on:
       - 'php-fpm'
     volumes:
       - './:/app'
-      - './.docker/nginx:/etc/nginx/conf.d'
-      - './.docker/log/nginx:/var/log/nginx'
-      - './.docker/certbot/conf:/etc/letsencrypt'
-      - './.docker/certbot/www:/var/www/certbot'
+      - '.docker/nginx:/etc/nginx/conf.d'
+      - '.docker/log/nginx:/var/log/nginx'
   php-fpm:
     user: '1000'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
     build:
-      context: './.docker/php'
+      context: '.docker/php'
       dockerfile: './Dockerfile'
     depends_on:
       - 'mysql'
       - 'memcached'
     volumes:
       - './:/app'
-      - './.docker/php/conf.d/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini'
-      - './.docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+      - '.docker/php/conf.d/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini'
   memcached:
     image: 'memcached:latest'
     ports:
@@ -42,20 +36,13 @@ services:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
     volumes:
-      - './.docker/mysql/my.cnf:/etc/mysql/my.cnf'
-      - './.docker/mysql/mysqldata:/var/lib/mysql'
-  certbot:
-    image: 'certbot/certbot'
-    restart: unless-stopped
-    volumes:
-        - './.docker/certbot/conf:/etc/letsencrypt'
-        - './.docker/certbot/www:/var/www/certbot'
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - '.docker/mysql/my.cnf:/etc/mysql/my.cnf'
+      - 'mysql:/var/lib/mysql'
   horizon:
       user: '1000'
       tty: true
       build:
-          context: './.docker/horizon'
+          context: '.docker/php'
           dockerfile: 'Dockerfile'
       entrypoint: 'php artisan queue:work'
       restart: always
@@ -64,3 +51,7 @@ services:
           - 'mysql'
       volumes:
           - './:/app'
+
+volumes:
+    mysql:
+        driver: local

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\DTO\UserProfileDTO;
+use App\DTO\UserRegisterDTO;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
-use App\Services\ProfileService;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -17,7 +15,7 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request, AuthService $authService)
     {
-        $dto = new UserProfileDTO(...$request->validated());
+        $dto = new UserRegisterDTO(...$request->validated());
         $authService->register($dto);
 
         return redirect(route('profile.dashboard'));

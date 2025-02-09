@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DTO\UserProfileDTO;
+use App\DTO\UserGoogleAuthDTO;
+use App\DTO\UserLoginDTO;
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
-use Google\Service\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -19,7 +19,8 @@ class LoginController extends Controller
 
     public function store(LoginRequest $request, AuthService $loginService)
     {
-        $dto = new UserProfileDTO(...$request->validated());
+        $dto = new UserLoginDTO(...$request->validated());
+
         if ($loginService->login($dto))
         {
             $request->session()->regenerate();
@@ -42,9 +43,6 @@ class LoginController extends Controller
 //        );
     }
 
-    /**
-     * @throws Exception
-     */
     public function authGoogleCallback(Request $request, AuthService $authService)
     {
 
@@ -53,13 +51,13 @@ class LoginController extends Controller
 
         $user = Socialite::driver('google')->user();
 
-        $dto = new UserProfileDTO(
-            google_id: $user->id,
-            google_token: $user->token,
-            google_refresh_token: $user->refreshToken ?? null,
+        $dto = new UserGoogleAuthDTO(
+            id: $user->id,
+            token: $user->token,
+            refresh_token: $user->refreshToken ?? null,
             first_name: $user->name,
-            avatar: $user->avatar,
             email: $user->email,
+            avatar: $user->avatar,
         );
 
         $authService->googleAuth($dto);

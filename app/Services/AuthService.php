@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\DTO\UserProfileDTO;
+use App\DTO\UserGoogleAuthDTO;
+use App\DTO\UserLoginDTO;
+use App\DTO\UserRegisterDTO;
 use App\Models\User;
 use Google\Client;
 use Google\Service\Exception;
@@ -39,7 +41,7 @@ readonly class AuthService
         return $user->userinfo->get();
     }
 
-    public function login(UserProfileDTO $dto): bool
+    public function login(UserLoginDTO $dto): bool
     {
         return Auth::attempt([
             'email' => $dto->email,
@@ -47,13 +49,12 @@ readonly class AuthService
         ], (boolean) $dto->remember_me);
     }
 
-    public function register(UserProfileDTO $dto): User
+    public function register(UserRegisterDTO $dto): User
     {
         $user = new User([
             'first_name'=>$dto->first_name,
             'email'=>$dto->email,
             'password'=>$dto->password,
-            'avatar'=>$dto->avatar,
             'user_hash'=>strtoupper(Str::random(10)),
             'trial_expiration_time'=>now()->addDays((int)config('app.trial_duration')),
             'is_subscribed'=>true
@@ -67,7 +68,7 @@ readonly class AuthService
         return $user;
     }
 
-    public function googleAuth(UserProfileDTO $dto)
+    public function googleAuth(UserGoogleAuthDTO $dto)
     {
         $user = User::where('email', $dto->email)->first();
 
@@ -77,9 +78,9 @@ readonly class AuthService
                 'email' => $dto->email,
                 'password' => '',
                 'avatar' => $dto->avatar,
-                'google_id' => $dto->google_id,
-                'google_token' => $dto->google_token,
-                'google_refresh_token' => $dto->google_refresh_token,
+                'google_id' => $dto->id,
+                'google_token' => $dto->token,
+                'google_refresh_token' => $dto->refresh_token,
                 'user_hash'=>strtoupper(Str::random(10)),
                 'trial_expiration_time'=>now()->addDays((int)config('app.trial_duration')),
                 'is_subscribed'=>true,
@@ -91,9 +92,9 @@ readonly class AuthService
         }
 
         $user->update([
-            'google_id' => $dto->google_id,
-            'google_token' => $dto->google_token,
-            'google_refresh_token' => $dto->google_refresh_token,
+            'google_id' => $dto->id,
+            'google_token' => $dto->token,
+            'google_refresh_token' => $dto->refresh_token,
         ]);
 
         Auth::login($user, true);

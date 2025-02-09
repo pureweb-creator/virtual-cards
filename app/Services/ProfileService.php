@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\DTO\LocationDTO;
 use App\DTO\SocialLinkDTO;
-use App\DTO\UserProfileDTO;
+use App\DTO\UserProfileUpdateDTO;
 use App\Jobs\GenerateVcard;
 use App\Models\Location;
 use App\Models\SocialNetwork;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 
 class ProfileService
 {
-    public function update(UserProfileDTO $dto): void
+    public function update(UserProfileUpdateDTO $dto): void
     {
         Auth::user()->update([
             'first_name'=>$dto->first_name,

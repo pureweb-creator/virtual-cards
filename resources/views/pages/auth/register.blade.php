@@ -201,7 +201,7 @@
 
             <div class="checkbox mb-3">
                 <label>
-                    <input type="checkbox" name="remember_me" checked value="remember-me"> Remember me
+                    <input type="checkbox" name="remember_me" checked value="1"> Remember me
                 </label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>

@@ -271,7 +271,7 @@
                                     <h3 class="mb-3">Your social links</h3>
                                     @csrf
                                     @session('messageSocLink')
-                                    <x-alert type="success" :message="$value"></x-alert>
+                                        <x-alert type="success" :message="$value"></x-alert>
                                     @endsession
 
                                     @foreach($socialNetworks as $network)
@@ -290,7 +290,7 @@
                                                 <input
                                                     class="form-check-input"
                                                     type="checkbox"
-                                                        {{$user->socialNetworks[$loop->index]->pivot->hidden ? 'checked' : ''}}
+                                                        {{isset($user->socialNetworks[$loop->index]->pivot->hidden) && $user->socialNetworks[$loop->index]->pivot->hidden == true ? 'checked' : ''}}
                                                     name="{{$network->name}}_hidden"
                                                     id="{{$network->name}}_hidden"
                                                 >

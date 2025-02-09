@@ -46,17 +46,15 @@
                 <i class="bi bi-envelope ms-4"></i>
             </li>
 
-            @if(!is_null($user->location->street) || !is_null($user->location->city) || !is_null($user->location->country) || !is_null($user->location->postcode))
-                <li class="d-flex align-items-center justify-content-between">
-                    <a href="https://maps.google.com/?q={{$user->location->street ?? ''}} {{$user->location->city ?? ''}} {{$user->location->country ?? ''}} {{$user->location->postcode ?? ''}}" target="_blank">
-                        {{$user->location->street ?? ''}}
-                        {{$user->location->city ?? ''}}
-                        {{$user->location->country ?? ''}}
-                        {{$user->location->postcode ?? ''}}
-                    </a>
-                    <i class="bi bi-pin-map ms-4"></i>
-                </li>
-            @endif
+            <li class="d-flex align-items-center justify-content-between">
+                <a href="https://maps.google.com/?q={{$user->location?->street}} {{$user->location?->city}} {{$user->location?->country}} {{$user->location?->postcode}}" target="_blank">
+                    {{$user->location?->street}}
+                    {{$user->location?->city}}
+                    {{$user->location?->country}}
+                    {{$user->location?->postcode}}
+                </a>
+                <i class="bi bi-pin-map ms-4"></i>
+            </li>
         </ul>
 
         <ul class="basic-info-list my-4">

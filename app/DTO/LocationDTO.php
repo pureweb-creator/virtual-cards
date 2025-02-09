@@ -2,13 +2,13 @@
 
 namespace App\DTO;
 
-class LocationDTO
+readonly class LocationDTO
 {
     public function __construct(
-        public string|null $country=null,
-        public string|null $city=null,
-        public string|null $street=null,
-        public string|null $postcode=null
+        public ?string $country,
+        public ?string $city,
+        public ?string $street,
+        public ?string $postcode
     )
     {}
 }
