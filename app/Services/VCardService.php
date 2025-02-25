@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\VCardDTO;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use JeroenDesloovere\VCard\VCard;
@@ -9,9 +10,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VCardService
 {
-    public function generate(null|string|int $userId): string
+    public function generate(VCardDTO $dto): string
     {
-        $user = User::find($userId)->load(['socialNetworks', 'location']);
+        $user = User::find($dto->userId)->load(['socialNetworks', 'location']);
 
         $userLocation = $user->location;
         $lastname = $user->last_name;

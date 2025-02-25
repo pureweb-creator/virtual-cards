@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\DTO\VCardDTO;
 use App\Services\VCardService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -23,6 +24,10 @@ class GenerateVcard implements ShouldQueue
      */
     public function handle(VCardService $VCardService): void
     {
-        $VCardService->generate($this->userId);
+        try{
+            $VCardService->generate(new VCardDTO(userId: $this->userId));
+        } catch (\Exception $e){
+            \Log::error("Error processing job {$this->userId}: ".$e->getMessage());
+        }
     }
 }

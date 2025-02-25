@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\VCardDTO;
 use App\Services\VCardService;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +11,7 @@ class VCardController extends Controller
     public function generate(VCardService $VCardService)
     {
         $VCardService->generate(
-            Auth::id()
+            new VCardDTO(userId: Auth::id())
         );
 
         return back()->with([
