@@ -13,8 +13,10 @@
         "jeroendesloovere/vcard": "dev-master",
         "laravel/framework": "^11.9",
         "laravel/socialite": "^5.15",
+        "laravel/telescope": "^5.5",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.28",
+        "spatie/laravel-data": "^4.13",
         "stripe/stripe-php": "^15.4"
     },
     "require-dev": {
@@ -58,7 +60,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {

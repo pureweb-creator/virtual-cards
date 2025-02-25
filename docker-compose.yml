@@ -11,6 +11,7 @@ services:
       - '.docker/nginx:/etc/nginx/conf.d'
       - '.docker/log/nginx:/var/log/nginx'
   php-fpm:
+    image: 'my-php-fpm:v1.0'
     user: '1000'
     build:
       context: '.docker/php'
@@ -38,12 +39,14 @@ services:
     volumes:
       - '.docker/mysql/my.cnf:/etc/mysql/my.cnf'
       - 'mysql:/var/lib/mysql'
+    healthcheck:
+        test: [ 'CMD', 'mysqladmin', 'ping', '--user=root', '-p=${DB_PASSWORD}' ]
+        retries: 3
+        timeout: 5s
   horizon:
+      image: 'my-php-fpm:v1.0'
       user: '1000'
       tty: true
-      build:
-          context: '.docker/php'
-          dockerfile: 'Dockerfile'
       entrypoint: 'php artisan queue:work'
       restart: always
       depends_on:

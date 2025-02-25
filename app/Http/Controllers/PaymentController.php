@@ -21,7 +21,17 @@ class PaymentController extends Controller
     public function create(string $period)
     {
         try {
-            $dto = new PaymentDTO(period: $period);
+            $dto = new PaymentDTO(
+                amount: null,
+                currency: null,
+                description: null,
+                language: null,
+                orderId: null,
+                interval: null,
+                period: $period,
+                email: null,
+                userId: null
+            );
             $paymentLink = $this->payment->init($dto);
             return redirect($paymentLink);
 
