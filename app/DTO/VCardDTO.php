@@ -2,10 +2,10 @@
 
 namespace App\DTO;
 
-class VCardDTO
+final readonly class VCardDTO
 {
     public function __construct(
-        public string $userId
+        public int $userId
     )
     {}
 }

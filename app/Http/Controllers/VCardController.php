@@ -11,7 +11,7 @@ class VCardController extends Controller
     public function generate(VCardService $VCardService)
     {
         $VCardService->generate(
-            new VCardDTO(userId: Auth::id())
+            new VCardDTO(userId: (int) Auth::id())
         );
 
         return back()->with([

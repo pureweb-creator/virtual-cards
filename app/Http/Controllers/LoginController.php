@@ -19,7 +19,12 @@ class LoginController extends Controller
 
     public function store(LoginRequest $request, AuthService $loginService)
     {
-        $dto = new UserLoginDTO(...$request->validated());
+        $data = $request->validated();
+        $dto = new UserLoginDTO(
+            email: $data['email'],
+            password: $data['password'],
+            remember_me: isset($data['remember_me']) ? (bool) $data['remember_me'] : null,
+        );
 
         if ($loginService->login($dto))
         {

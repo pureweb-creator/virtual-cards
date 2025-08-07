@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-class PaymentDTO
+final readonly class PaymentDTO
 {
     public function __construct(
         public ?float $amount,
@@ -11,9 +11,9 @@ class PaymentDTO
         public ?string $language,
         public ?string $orderId,
         public ?string $interval,
-        public ?string $period,
+        public string $period,
         public ?string $email,
-        public ?string $userId
+        public ?int $userId
     )
     {}
 }

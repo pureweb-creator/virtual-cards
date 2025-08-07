@@ -2,12 +2,12 @@
 
 namespace App\DTO;
 
-readonly class UserLoginDTO
+final readonly class UserLoginDTO
 {
     public function __construct(
         public string $email,
         public string $password,
-        public ?string $remember_me=null
+        public ?bool $remember_me=null
     )
     {}
 }

@@ -15,7 +15,13 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request, AuthService $authService)
     {
-        $dto = new UserRegisterDTO(...$request->validated());
+        $data = $request->validated();
+        $dto = new UserRegisterDTO(
+            first_name: $data['first_name'],
+            email: $data['email'],
+            password: $data['password'],
+            remember_me: isset($data['remember_me']) ? (bool) $data['remember_me'] : null,
+        );
         $authService->register($dto);
 
         return redirect(route('profile.dashboard'));

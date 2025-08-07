@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-readonly class SocialLinkDTO
+final readonly class SocialLinkDTO
 {
     public function __construct(
         public ?string $telegram,
@@ -10,11 +10,11 @@ readonly class SocialLinkDTO
         public ?string $instagram,
         public ?string $whatsapp,
         public ?string $twitter,
-        public ?string $telegram_hidden=null,
-        public ?string $facebook_hidden=null,
-        public ?string $instagram_hidden=null,
-        public ?string $whatsapp_hidden=null,
-        public ?string $twitter_hidden=null,
+        public ?bool $telegram_hidden=null,
+        public ?bool $facebook_hidden=null,
+        public ?bool $instagram_hidden=null,
+        public ?bool $whatsapp_hidden=null,
+        public ?bool $twitter_hidden=null,
     )
     {}
 }
