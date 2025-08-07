@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-readonly class LocationDTO
+final readonly class LocationDTO
 {
     public function __construct(
         public ?string $country,

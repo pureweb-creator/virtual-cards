@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-readonly class UserProfileUpdateDTO
+final readonly class UserProfileUpdateDTO
 {
     public function __construct(
         public string  $first_name,
